@@ -1,0 +1,108 @@
+/*
+ * @(#)OrRequirement.java   13/08/28
+ * 
+ * Copyright (c) 2013 DieHard Development
+ *
+ * All rights reserved.
+Released under the FreeBSD  license 
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met: 
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer. 
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution. 
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The views and conclusions contained in the software and documentation are those
+of the authors and should not be interpreted as representing official policies, 
+either expressed or implied, of the FreeBSD Project.
+ *
+ *
+ *
+ */
+
+
+package rnr.src.rnrscenario.missions.requirements;
+
+//~--- non-JDK imports --------------------------------------------------------
+
+import rnr.src.rnrscenario.missions.PriorityTable;
+
+//~--- JDK imports ------------------------------------------------------------
+
+import java.util.Collection;
+import java.util.Iterator;
+
+/**
+ * Class description
+ *
+ *
+ * @version        1.0, 13/08/28
+ * @author         TJ    
+ */
+public final class OrRequirement extends RequirementList {
+    static final long serialVersionUID = 0L;
+
+    OrRequirement(PriorityTable table) {
+        setPriorityTable(table);
+    }
+
+    /**
+     * Method description
+     *
+     *
+     * @return
+     */
+    @Override
+    public boolean check() {
+        for (Requirement requirement : getList()) {
+            if (requirement.check()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    Requirement optimize() {
+        if (1 == getList().size()) {
+            return (getList().iterator().next());
+        }
+
+        return this;
+    }
+
+    /**
+     * Method description
+     *
+     *
+     * @return
+     */
+    @Override
+    public int getPriorityIncrement() {
+        int maxPriorityIncrement = 0;
+
+        for (Requirement requirement : getList()) {
+            if (requirement.check()) {
+                maxPriorityIncrement = Math.max(maxPriorityIncrement, requirement.getPriorityIncrement());
+            }
+        }
+
+        return maxPriorityIncrement;
+    }
+}
+
+
+//~ Formatted in DD Std on 13/08/28
